@@ -1,0 +1,9 @@
+{
+	"name": "BuildWithoutRhythm",
+	"version": "1.0.0",
+	"title": "Build Without   Rhythm",
+	"author": "StephenB",
+	"factorio_version": "1.1",
+	"dependencies": ["base >= 1.1" ],
+	"description": "Forbids you from ever building three machines in a straight line spaced equally far apart. Irregular designs are mandatory."
+}
