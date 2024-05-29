@@ -1,15 +1,22 @@
+
+local blockableGroups = require("blockable-groups")
+local blockableGroupsSet = {}
+for _, v in pairs(blockableGroups) do
+	blockableGroupsSet[v[1]] = true
+end
+
 local lastMessageTick = 0
 local messageWaitTicks = 15 -- Don't show message if a message was already shown within this many ticks ago.
 
-function posEqual(p1, p2)
+local function posEqual(p1, p2)
 	return p1.x == p2.x and p1.y == p2.y
 end
 
-function length(v)
+local function length(v)
 	return math.floor(math.sqrt(v.x * v.x + v.y * v.y))
 end
 
-function findBlockingEntity(ent1, rad)
+local function findBlockingEntity(ent1, rad)
 	-- If the given entity completes an arithmetic trio, this returns one of the other entities in that trio.
 	-- If given entity is an endpoint, it always returns the closer of the two other entities.
 	-- If multiple trios, can return any of them.
@@ -65,7 +72,7 @@ function findBlockingEntity(ent1, rad)
 	return nil
 end
 
-function getRelativePosString(a, b)
+local function getRelativePosString(a, b)
 	-- Given positions a, b, makes a string describing the position of b relative to A, like "25 E" meaning 25 blocks east.
 	local d = {x = b.x - a.x, y = b.y - a.y}
 	local distance = length(d)
@@ -97,17 +104,10 @@ function getRelativePosString(a, b)
 	return distance .. " " .. dir
 end
 
-local settingNames = { -- Maps entity "type" to setting name.
-	["inserter"] = "BuildWithoutRhythm-block-inserters",
-	["assembling-machine"] = "BuildWithoutRhythm-block-assemblers",
-	["electric-pole"] = "BuildWithoutRhythm-block-power-poles",
-	["solar-panel"] = "BuildWithoutRhythm-block-solar-panels",
-	["furnace"] = "BuildWithoutRhythm-block-furnaces",
-}
-
-function maybeBlockPlayerPlacement(event)
-	local settingName = settingNames[event.created_entity.type]
-	if settingName == nil then return end
+local function maybeBlockPlayerPlacement(event)
+	local entityType = event.created_entity.type
+	if not blockableGroupsSet[entityType] then return end
+	local settingName = "BuildWithoutRhythm-block-"..entityType
 	local radius = settings.global[settingName].value
 	if radius == 0 then return end
 
@@ -116,6 +116,10 @@ function maybeBlockPlayerPlacement(event)
 	if blockedBy == nil then return end
 
 	local player = game.get_player(event.player_index)
+	if player == nil then
+		log("Player is nil")
+		return
+	end
 	if game.tick > lastMessageTick + messageWaitTicks then
 		lastMessageTick = game.tick
 		local relativePosString = getRelativePosString(placed.position, blockedBy.position)
@@ -128,9 +132,10 @@ function maybeBlockPlayerPlacement(event)
 	player.mine_entity(placed, true) -- "true" says force mining it even if player's inventory is full.
 end
 
-function maybeBlockRobotPlacement(event)
-	local settingName = settingNames[event.created_entity.type]
-	if settingName == nil then return end
+local function maybeBlockRobotPlacement(event)
+	local entityType = event.created_entity.type
+	if not blockableGroupsSet[entityType] then return end
+	local settingName = "BuildWithoutRhythm-block-"..entityType
 	local radius = settings.global[settingName].value
 	if radius == 0 then return end
 
@@ -147,3 +152,5 @@ end
 
 script.on_event(defines.events.on_built_entity, maybeBlockPlayerPlacement)
 script.on_event(defines.events.on_robot_built_entity, maybeBlockRobotPlacement)
+
+-- TODO: Add settings to adjust how many in a straight line before we block it. Could be better to set that to like 4, rather than 3. Shouldn't be too hard to implement.

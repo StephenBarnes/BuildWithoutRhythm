@@ -1,42 +1,14 @@
-data:extend({
-    {
-        order = "1",
-        name = "BuildWithoutRhythm-block-inserters",
+local newData = {}
+local blockableGroups = require("blockable-groups")
+for i, blockableType in pairs(blockableGroups) do
+    table.insert(newData, {
+        order = string.format("%3d", i),
+        name = "BuildWithoutRhythm-block-" .. blockableType[1],
         type = "int-setting",
         setting_type = "runtime-global",
-        default_value = 300,
+        default_value = blockableType[2],
         minimum_value = 0,
-    },
-    {
-        order = "2",
-        name = "BuildWithoutRhythm-block-assemblers",
-        type = "int-setting",
-        setting_type = "runtime-global",
-        default_value = 300,
-        minimum_value = 0,
-    },
-    {
-        order = "3",
-        name = "BuildWithoutRhythm-block-power-poles",
-        type = "int-setting",
-        setting_type = "runtime-global",
-        default_value = 300,
-        minimum_value = 0,
-    },
-    {
-        order = "4",
-        name = "BuildWithoutRhythm-block-solar-panels",
-        type = "int-setting",
-        setting_type = "runtime-global",
-        default_value = 300,
-        minimum_value = 0,
-    },
-    {
-        order = "5",
-        name = "BuildWithoutRhythm-block-furnaces",
-        type = "int-setting",
-        setting_type = "runtime-global",
-        default_value = 300,
-        minimum_value = 0,
-    },
-})
+        localised_name = {"mod-setting-name.BuildWithoutRhythm-block-radius", {"BuildWithoutRhythm-blockable-type."..blockableType[1]}},
+    })
+end
+data:extend(newData)
