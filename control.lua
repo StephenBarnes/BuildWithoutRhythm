@@ -106,26 +106,26 @@ local settingNames = { -- Maps entity "type" to setting name.
 }
 
 function maybeBlockPlayerPlacement(event)
-		local settingName = settingNames[event.created_entity.type]
-		if settingName == nil then return end
-		local radius = settings.global[settingName].value
-		if radius == 0 then return end
+	local settingName = settingNames[event.created_entity.type]
+	if settingName == nil then return end
+	local radius = settings.global[settingName].value
+	if radius == 0 then return end
 
-		local placed = event.created_entity
-		local blockedBy = findBlockingEntity(placed, radius)
-		if blockedBy == nil then return end
+	local placed = event.created_entity
+	local blockedBy = findBlockingEntity(placed, radius)
+	if blockedBy == nil then return end
 
-		local player = game.get_player(event.player_index)
-		if game.tick > lastMessageTick + messageWaitTicks then
-			lastMessageTick = game.tick
-			local relativePosString = relativePosString(placed.position, blockedBy.position)
-			player.create_local_flying_text {
-				text = {"cant-build-reason.entity-forms-trio", {"entity-name."..blockedBy.name}, relativePosString},
-				create_at_cursor = true,
-				time_to_live = 120,
-			}
-		end
-		player.mine_entity(placed, true) -- "true" says force mining it even if player's inventory is full.
+	local player = game.get_player(event.player_index)
+	if game.tick > lastMessageTick + messageWaitTicks then
+		lastMessageTick = game.tick
+		local relativePosString = relativePosString(placed.position, blockedBy.position)
+		player.create_local_flying_text {
+			text = {"cant-build-reason.entity-forms-trio", {"entity-name."..blockedBy.name}, relativePosString},
+			create_at_cursor = true,
+			time_to_live = 120,
+		}
+	end
+	player.mine_entity(placed, true) -- "true" says force mining it even if player's inventory is full.
 end
 
 function maybeBlockRobotPlacement(event)
