@@ -65,7 +65,7 @@ function findBlockingEntity(ent1, rad)
 	return nil
 end
 
-function relativePosString(a, b)
+function getRelativePosString(a, b)
 	-- Given positions a, b, makes a string describing the position of b relative to A, like "25 E" meaning 25 blocks east.
 	local d = {x = b.x - a.x, y = b.y - a.y}
 	local distance = length(d)
@@ -118,7 +118,7 @@ function maybeBlockPlayerPlacement(event)
 	local player = game.get_player(event.player_index)
 	if game.tick > lastMessageTick + messageWaitTicks then
 		lastMessageTick = game.tick
-		local relativePosString = relativePosString(placed.position, blockedBy.position)
+		local relativePosString = getRelativePosString(placed.position, blockedBy.position)
 		player.create_local_flying_text {
 			text = {"cant-build-reason.entity-forms-trio", {"entity-name."..blockedBy.name}, relativePosString},
 			create_at_cursor = true,
