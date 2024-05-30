@@ -57,3 +57,4 @@ local blockableGroups = {
 return blockableGroups
 
 -- TODO add a setting where users can supply a comma-separated string that adds new blockable groups, including adding new startup settings for those groups.
+-- Probably just allow arbitrary sets of comma-separated names (not types), like "gun-turret,laser-turret;core-miner-1,core-miner-2" rather than filter-lists in full generality.
