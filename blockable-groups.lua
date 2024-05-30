@@ -49,11 +49,10 @@ local blockableGroups = {
 	--{"rocket-silo", 300},
 
 	{"splitter", 300},
-	--{"transport-belt", 0},
-	{"underground-belt", 0},
-
-	--{"pipe", 0},
-	{"pipe-to-ground", 0},
+	--{"transport-belt", 0}, -- Might make sense when count=4 is implemented; currently with count=3 they're useless. Could also take the rotation into account.
+	--{"pipe", 0}, -- Might make sense when count=4 is implemented.
+	{"underground-belt", 0}, -- Bug: flips direction when placed and removed.
+	{"pipe-to-ground", 0}, -- Bug: flips direction when placed and removed.
 }
 return blockableGroups
 
